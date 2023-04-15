@@ -144,7 +144,8 @@ public class HomeController implements Initializable {
         url = urlBuilder.build().toString();
 
         filteredMovies = movieAPI.synchronousGETMoviesList(url);
-        //TEST
+
+        //STREAM-TEST
         System.out.println(getLongestMovieTitle(filteredMovies));
         System.out.println(getMostPopularActor(filteredMovies));
         System.out.println(getMoviesBetweenYears(filteredMovies, 2000, 2010));
