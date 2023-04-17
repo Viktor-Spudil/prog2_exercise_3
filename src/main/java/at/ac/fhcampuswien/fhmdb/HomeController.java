@@ -137,8 +137,8 @@ public class HomeController implements Initializable {
         //STREAM-TEST
         System.out.println(getMostPopularActor(filteredMovies));
         System.out.println(getLongestMovieTitle(filteredMovies));
-        System.out.println(getMoviesBetweenYears(filteredMovies, 2000, 2010));
         System.out.println(countMoviesFrom(filteredMovies, "Quentin Tarantino"));
+        System.out.println(getMoviesBetweenYears(filteredMovies, 2000, 2010));
 
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
