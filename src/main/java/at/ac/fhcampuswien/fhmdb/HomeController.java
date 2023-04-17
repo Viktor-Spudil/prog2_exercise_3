@@ -135,10 +135,10 @@ public class HomeController implements Initializable {
         filteredMovies = movieAPI.synchronousGETMoviesList(BASE_URL, searchQuery, genre, releasedYear, ratingFrom);
 
         //STREAM-TEST
-        System.out.println(getMostPopularActor(filteredMovies));
-        System.out.println(getLongestMovieTitle(filteredMovies));
-        System.out.println(countMoviesFrom(filteredMovies, "Quentin Tarantino"));
-        System.out.println(getMoviesBetweenYears(filteredMovies, 2000, 2010));
+        System.out.println("Most popular actor: " + getMostPopularActor(filteredMovies));
+        System.out.println("Longest movie title: " + getLongestMovieTitle(filteredMovies));
+        System.out.println("Amount of movies from: " + countMoviesFrom(filteredMovies, "Quentin Tarantino"));
+        System.out.println("Movies between years: " + getMoviesBetweenYears(filteredMovies, 2000, 2010));
 
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
