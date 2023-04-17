@@ -8,14 +8,14 @@ public class Movie {
     public final String id;
     public final String title;
     public final List<Genre> genres;
-    public Integer releaseYear;
+    public final Integer releaseYear;
     public final String description;
     public final String imgUrl;
     public final Integer lengthInMinutes;
-    public List<String> directors;
-    public List<String> writers;
-    public List<String> mainCast;
-    public Double rating;
+    public final List<String> directors;
+    public final List<String> writers;
+    public final List<String> mainCast;
+    public final Double rating;
 
 
 
