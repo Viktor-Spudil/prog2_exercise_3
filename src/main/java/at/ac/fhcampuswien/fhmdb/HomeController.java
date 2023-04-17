@@ -20,8 +20,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import okhttp3.HttpUrl;
-import okhttp3.HttpUrl.Builder;
 
 public class HomeController implements Initializable {
     @FXML
