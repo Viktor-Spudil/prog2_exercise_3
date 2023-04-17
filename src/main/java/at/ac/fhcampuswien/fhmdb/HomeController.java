@@ -50,7 +50,7 @@ public class HomeController implements Initializable {
     protected SortedState sortedState;
 
     private final String BASE_URL = "http://localhost:8080/movies";
-    MovieAPI movieAPI = new MovieAPI();
+    private MovieAPI movieAPI = new MovieAPI();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

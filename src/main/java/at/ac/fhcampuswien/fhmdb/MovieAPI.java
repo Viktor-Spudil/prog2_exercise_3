@@ -30,6 +30,7 @@ public class MovieAPI {
     // === 4. STATIC METHODS ===
     // === 5. GETTER AND SETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
+    //TODO:REFACTOR
     public List<Movie> synchronousGETMoviesList(String BASE_URL, String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
         List<Movie> moviesList;
         HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
@@ -61,8 +62,8 @@ public class MovieAPI {
 
         // Parse response
         String jsonString = response.body().string();
-        TypeToken<List<Movie>> collectionType = new TypeToken<List<Movie>>() {};
-        moviesList = gson.fromJson(jsonString, collectionType);
+        TypeToken<List<Movie>> collectionType = new TypeToken<>() {};
+        moviesList = gson.fromJson(jsonString, collectionType); //reflections
 
         return moviesList;
     }
