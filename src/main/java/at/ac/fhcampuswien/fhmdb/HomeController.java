@@ -65,7 +65,7 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() throws IOException {
-        allMovies = movieAPI.synchronousGETMoviesList(BASE_URL);
+        allMovies = movieAPI.synchronousGETMoviesList(BASE_URL, null, null, null, null);
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
@@ -132,18 +132,9 @@ public class HomeController implements Initializable {
     }
 
     public void applyAllFilters(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
-        String url;
         List<Movie> filteredMovies;
 
-
-        urlBuilder.addQueryParameter("query", !searchQuery.isBlank() ? searchQuery : "");
-        urlBuilder.addQueryParameter("genre", genre != null && !genre.toString().equals("No filter") ? genre.toString() : "");
-        urlBuilder.addQueryParameter("releaseYear", !releasedYear.isBlank() ? releasedYear : "");
-        urlBuilder.addQueryParameter("ratingFrom", !ratingFrom.isBlank() ? ratingFrom : "");
-        url = urlBuilder.build().toString();
-
-        filteredMovies = movieAPI.synchronousGETMoviesList(url);
+        filteredMovies = movieAPI.synchronousGETMoviesList(BASE_URL, searchQuery, genre, releasedYear, ratingFrom);
 
         //STREAM-TEST
         System.out.println(getMostPopularActor(filteredMovies));
