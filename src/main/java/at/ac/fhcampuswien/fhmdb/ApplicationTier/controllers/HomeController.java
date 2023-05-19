@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 
 public class HomeController implements Initializable {
+
     @FXML
     public JFXButton searchBtn;
 
@@ -44,7 +46,13 @@ public class HomeController implements Initializable {
     @FXML
     public JFXButton sortBtn;
 
+    @FXML
+    public Button homeButton;
+    @FXML
+    public Button watchlistButton;
+
     public List<Movie> allMovies;
+
 
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
@@ -190,5 +198,12 @@ public class HomeController implements Initializable {
                 .filter(Objects::nonNull)
                 .filter(movie -> (movie.getReleaseYear() >= startYear) && (movie.getReleaseYear() <= endYear))
                 .toList();
+    }
+
+    public void loadHome() {
+
+    }
+    public void loadWatchlist() {
+
     }
 }
