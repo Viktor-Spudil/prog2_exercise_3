@@ -16,6 +16,7 @@ public class MovieAPI {
     // === 2. OBJECT VARIABLES ===
     private final OkHttpClient client;
     private final Gson gson = new Gson();
+    //private final String BASE_URL = "https://prog2.fh-campuswien.ac.at/movies";
     private final String BASE_URL = "http://localhost:8080/movies";
 
 
