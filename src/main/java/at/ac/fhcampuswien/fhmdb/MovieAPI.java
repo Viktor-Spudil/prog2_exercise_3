@@ -16,6 +16,7 @@ public class MovieAPI {
     // === 2. OBJECT VARIABLES ===
     private final OkHttpClient client;
     private final Gson gson = new Gson();
+    private final String BASE_URL = "http://localhost:8080/movies";
 
 
     // === 3. CONSTRUCTORS ===
@@ -30,11 +31,9 @@ public class MovieAPI {
     // === 4. STATIC METHODS ===
     // === 5. GETTER AND SETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
-    //TODO:REFACTOR
-    public List<Movie> synchronousGETMoviesList(String BASE_URL, String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
-        List<Movie> moviesList;
+    private String buildURL(String searchQuery, Object genre, String releasedYear, String ratingFrom) {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
-        String url;
+
 
         // Build request URL
         if (!(searchQuery == null) && !searchQuery.isBlank()) {
@@ -49,7 +48,15 @@ public class MovieAPI {
         if (!(ratingFrom == null) && !ratingFrom.isBlank()) {
             urlBuilder.addQueryParameter("ratingFrom", ratingFrom);
         }
-        url = urlBuilder.build().toString();
+
+        return urlBuilder.build().toString();
+    }
+
+    public List<Movie> synchronousGETMoviesList(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
+        List<Movie> moviesList;
+        String url;
+
+        url = buildURL(searchQuery, genre, releasedYear, ratingFrom);
         System.out.println(url);
 
         // Make request and receive response

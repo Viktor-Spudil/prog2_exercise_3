@@ -49,7 +49,6 @@ public class HomeController implements Initializable {
 
     protected SortedState sortedState;
 
-    private final String BASE_URL = "http://localhost:8080/movies";
     private MovieAPI movieAPI = new MovieAPI();
 
     @Override
@@ -63,7 +62,7 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() throws IOException {
-        allMovies = movieAPI.synchronousGETMoviesList(BASE_URL, null, null, null, null);
+        allMovies = movieAPI.synchronousGETMoviesList(null, null, null, null);
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
@@ -132,7 +131,7 @@ public class HomeController implements Initializable {
     public void applyAllFilters(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
         List<Movie> filteredMovies;
 
-        filteredMovies = movieAPI.synchronousGETMoviesList(BASE_URL, searchQuery, genre, releasedYear, ratingFrom);
+        filteredMovies = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
 
         //STREAM-TEST
         System.out.println("Most popular actor: " + getMostPopularActor(filteredMovies));
