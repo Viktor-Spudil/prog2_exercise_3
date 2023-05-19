@@ -42,6 +42,20 @@ public class WatchlistMovieEntity {
     // --- 3.1 STATIC BLOCKS ---
     // --- 3.2 INSTANCE INITIALIZER ---
     // --- 3.3 REAL CONSTRUCTORS ---
+    public WatchlistMovieEntity(String movieId, String title, String genres, Integer releaseYear, String description, String imgUrl, Integer lengthInMinutes, Double rating) {
+        this.movieId = movieId;
+        this.title = title;
+        this.genres = genres;
+        this.releaseYear = releaseYear;
+        this.description = description;
+        this.imgUrl = imgUrl;
+        this.lengthInMinutes = lengthInMinutes;
+        this.rating = rating;
+    }
+
+    public WatchlistMovieEntity() {}
+
+
     // === 4. STATIC METHODS ===
     // === 5. GETTER AND SETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
