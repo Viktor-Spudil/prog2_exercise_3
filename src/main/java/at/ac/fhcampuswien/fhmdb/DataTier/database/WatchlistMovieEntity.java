@@ -62,7 +62,7 @@ public class WatchlistMovieEntity {
     // === 5. GETTER AND SETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
     public static String genresToString(List<Genre> genres) {
-        String movieGenresAsOneString = "new String()";
+        String movieGenresAsOneString = new String();
 
         for (int i = 0; i < (genres.size() - 1); i++) {
             movieGenresAsOneString = movieGenresAsOneString + genres.get(i).toString() + ",";

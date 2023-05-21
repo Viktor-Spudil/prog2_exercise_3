@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers;
 
 import at.ac.fhcampuswien.fhmdb.DataTier.MovieAPI;
+import at.ac.fhcampuswien.fhmdb.DataTier.database.DatabaseManager;
+import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
@@ -17,6 +19,7 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
