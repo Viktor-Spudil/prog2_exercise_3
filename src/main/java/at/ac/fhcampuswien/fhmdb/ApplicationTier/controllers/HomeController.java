@@ -30,37 +30,26 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXButton searchBtn;
-
     @FXML
     public TextField searchField;
-
     @FXML
     public JFXListView movieListView;
-
     @FXML
     public JFXComboBox genreComboBox;
-
     @FXML
     public TextField releaseYearField;
-
     @FXML
     public TextField ratingField;
-
     @FXML
     public JFXButton sortBtn;
-
     @FXML
     public Button homeButton;
     @FXML
     public Button watchlistButton;
-
     public List<Movie> allMovies;
-
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected ObservableList<Movie> watchlist = FXCollections.observableArrayList();
-
     protected SortedState sortedState;
-
     private MovieAPI movieAPI = new MovieAPI();
 
     @Override
@@ -133,7 +122,6 @@ public class HomeController implements Initializable {
         sortMovies();
     }
 
-
     // Functionalities for movie management
     public void loadHomeView() {
         movieListView.setItems(observableMovies);
@@ -151,7 +139,6 @@ public class HomeController implements Initializable {
             });
             return cell;
         });
-
     }
     public void homeViewBtnClicked(ActionEvent actionEvent) {loadHomeView();}
 

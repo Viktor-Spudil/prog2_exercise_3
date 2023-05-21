@@ -1,6 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.PresentationTier;
 
-import at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -19,7 +18,6 @@ public class MovieCell extends ListCell<Movie> {
     private final Label rating = new Label();
     private final Button showDetails = new Button();
     private final Button addToWatchlist = new Button();
-    private final Button remove = new Button();
     private final VBox layout = new VBox();
     private final HBox buttonContainer = new HBox(showDetails, addToWatchlist);
 
@@ -30,18 +28,6 @@ public class MovieCell extends ListCell<Movie> {
     public Button getWatchlistButton() {
         return addToWatchlist;
     }
-
-
-    //public MovieCell(ClickEventHandler<Movie> addToWatchlistClicked) {
-    //    addToWatchlist.setOnMouseClicked(mouseEvent -> {
-    //        if (getItem() != null) {
-    //            addToWatchlistClicked.onClick(getItem());
-    //        }
-    //    });
-//
-    //    // Rest of the code
-    //}
-
 
     public MovieCell() {
         buttonContainer.setSpacing(10);
