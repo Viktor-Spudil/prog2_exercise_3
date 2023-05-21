@@ -6,7 +6,7 @@ import java.util.List;
 public class Movie {
     // === 1. CLASS VARIABLES ===
     // === 2. OBJECT VARIABLES ===
-    public final String id;
+    public final String movieId;
     public final String title;
     public final List<Genre> genres;
     public final Integer releaseYear;
@@ -23,8 +23,8 @@ public class Movie {
     // --- 3.1 STATIC BLOCKS ---
     // --- 3.2 INSTANCE INITIALIZER ---
     // --- 3.3 REAL CONSTRUCTORS ---
-    public Movie(String id, String title, List<Genre> genres, Integer releaseYear, String description, String imgUrl, Integer lengthInMinutes, List<String> directors, List<String> writers, Double rating) {
-        this.id = id;
+    public Movie(String movieId, String title, List<Genre> genres, Integer releaseYear, String description, String imgUrl, Integer lengthInMinutes, List<String> directors, List<String> writers, Double rating) {
+        this.movieId = movieId;
         this.title = title;
         this.genres = genres;
         this.releaseYear = releaseYear;
@@ -40,8 +40,8 @@ public class Movie {
 
     // === 4. STATIC METHODS ===
     // === 5. SETTER AND GETTER ===
-    public String getId() {
-        return this.id;
+    public String getMovieId() {
+        return this.movieId;
     }
 
     public String getTitle() {
