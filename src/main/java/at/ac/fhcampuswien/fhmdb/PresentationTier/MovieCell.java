@@ -1,6 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.PresentationTier;
 
-import at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -23,25 +22,9 @@ public class MovieCell extends ListCell<Movie> {
     private final VBox layout = new VBox();
     private final HBox buttonContainer = new HBox(showDetails, addToWatchlist);
 
-
-    public Button getShowDetailsButton() {
-        return showDetails;
-    }
     public Button getWatchlistButton() {
         return addToWatchlist;
     }
-
-
-    //public MovieCell(ClickEventHandler<Movie> addToWatchlistClicked) {
-    //    addToWatchlist.setOnMouseClicked(mouseEvent -> {
-    //        if (getItem() != null) {
-    //            addToWatchlistClicked.onClick(getItem());
-    //        }
-    //    });
-//
-    //    // Rest of the code
-    //}
-
 
     public MovieCell() {
         buttonContainer.setSpacing(10);
@@ -79,7 +62,6 @@ public class MovieCell extends ListCell<Movie> {
             showDetails.setText("Show Details");
             addToWatchlist.minHeight(10);
             addToWatchlist.minWidth(50);
-
 
             // color scheme
             title.getStyleClass().add("text-yellow");
