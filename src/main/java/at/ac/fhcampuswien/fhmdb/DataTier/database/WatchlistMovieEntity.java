@@ -4,6 +4,8 @@ import at.ac.fhcampuswien.fhmdb.models.Genre;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.List;
+
 
 @DatabaseTable(tableName = "watchlist")
 public class WatchlistMovieEntity {
@@ -59,5 +61,17 @@ public class WatchlistMovieEntity {
     // === 4. STATIC METHODS ===
     // === 5. GETTER AND SETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
+    public static String genresToString(List<Genre> genres) {
+        String movieGenresAsOneString = "new String()";
+
+        for (int i = 0; i < (genres.size() - 1); i++) {
+            movieGenresAsOneString = movieGenresAsOneString + genres.get(i).toString() + ",";
+        }
+        movieGenresAsOneString = movieGenresAsOneString + genres.get((genres.size() - 1)).toString();
+
+        return movieGenresAsOneString;
+    }
+
+
     // === 7. MAIN ===
 }

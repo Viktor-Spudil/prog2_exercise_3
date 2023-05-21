@@ -17,8 +17,10 @@ public class DatabaseManager {
     // === 2. OBJECT VARIABLES ===
     //private boolean connectionInitialized = false;
     private String DB_URL = "jdbc:h2:file: ./db/watchlistdb";
-    Dao<WatchlistMovieEntity, Long> accountDao;
+    Dao<WatchlistMovieEntity, Long> dao;
     private JdbcConnectionSource connectionSource;
+    private String username;
+    private String password;
 
 
     // === 3. CONSTRUCTORS ===
@@ -34,15 +36,22 @@ public class DatabaseManager {
         return INSTANCE;
     }
 
-    public Dao<WatchlistMovieEntity, Long> getAccountDao() {
-        return this.accountDao;
+    public JdbcConnectionSource getConnectionSource() {
+        return this.connectionSource;
+    }
+
+    public Dao<WatchlistMovieEntity, Long> getWatchlistDao() {
+        return this.dao;
     }
 
 
     // === 6. MISCELLANEOUS OBJECT METHODS ===
     public void initializeConnection(String username, String password) throws SQLException {
+        this.username = username;
+        this.password = password;
+
         createConnectionSource(username, password);
-        accountDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
+        dao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
         createTables();
     }
 
