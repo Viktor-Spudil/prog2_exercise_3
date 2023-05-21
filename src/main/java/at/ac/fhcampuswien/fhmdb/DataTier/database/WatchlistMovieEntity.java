@@ -5,6 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @DatabaseTable(tableName = "watchlist")
@@ -62,14 +63,10 @@ public class WatchlistMovieEntity {
     // === 5. GETTER AND SETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
     public static String genresToString(List<Genre> genres) {
-        String movieGenresAsOneString = new String();
-
-        for (int i = 0; i < (genres.size() - 1); i++) {
-            movieGenresAsOneString = movieGenresAsOneString + genres.get(i).toString() + ",";
-        }
-        movieGenresAsOneString = movieGenresAsOneString + genres.get((genres.size() - 1)).toString();
-
-        return movieGenresAsOneString;
+        return genres
+                .stream()
+                .map(Enum::toString)
+                .collect(Collectors.joining(", "));
     }
 
 
