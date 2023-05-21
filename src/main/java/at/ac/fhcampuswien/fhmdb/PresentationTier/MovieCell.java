@@ -1,14 +1,13 @@
 package at.ac.fhcampuswien.fhmdb.PresentationTier;
 
+import at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
-import com.jfoenix.controls.JFXButton;
+import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import java.util.stream.Collectors;
 
@@ -19,10 +18,38 @@ public class MovieCell extends ListCell<Movie> {
     private final Label releaseYear = new Label();
     private final Label rating = new Label();
     private final Button showDetails = new Button();
+    private final Button addToWatchlist = new Button();
     private final Button remove = new Button();
-    private final VBox layout = new VBox(title, detail, genre, releaseYear, rating, showDetails, remove);
+    private final VBox layout = new VBox();
+    private final HBox buttonContainer = new HBox(showDetails, addToWatchlist);
 
 
+    public Button getShowDetailsButton() {
+        return showDetails;
+    }
+    public Button getWatchlistButton() {
+        return addToWatchlist;
+    }
+
+
+    //public MovieCell(ClickEventHandler<Movie> addToWatchlistClicked) {
+    //    addToWatchlist.setOnMouseClicked(mouseEvent -> {
+    //        if (getItem() != null) {
+    //            addToWatchlistClicked.onClick(getItem());
+    //        }
+    //    });
+//
+    //    // Rest of the code
+    //}
+
+
+    public MovieCell() {
+        buttonContainer.setSpacing(10);
+        layout.getChildren().addAll(title, detail, genre, releaseYear, rating, buttonContainer);
+        layout.setAlignment(Pos.TOP_LEFT);
+        layout.setFillWidth(true);
+        VBox.setVgrow(detail, Priority.ALWAYS);
+    }
     @Override
     protected void updateItem(Movie movie, boolean empty) {
         super.updateItem(movie, empty);
@@ -50,9 +77,8 @@ public class MovieCell extends ListCell<Movie> {
             showDetails.minHeight(10);
             showDetails.minWidth(70);
             showDetails.setText("Show Details");
-            remove.minHeight(10);
-            remove.minWidth(40);
-            remove.setText("Remove");
+            addToWatchlist.minHeight(10);
+            addToWatchlist.minWidth(50);
 
 
             // color scheme

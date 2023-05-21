@@ -23,8 +23,8 @@
          <Label styleClass="text-white" stylesheets="@styles.css" text="Welcome to FHMDb!" />
          <HBox prefHeight="10.0" prefWidth="130.0" spacing="10.0">
             <children>
-               <Button fx:id="homeButton" onAction="#loadHome" mnemonicParsing="false" text="Home" />
-               <Button fx:id="watchlistButton" onAction="#loadWatchlist" mnemonicParsing="false" text="Watchlist" />
+               <Button fx:id="homeButton" onAction="#homeViewBtnClicked" mnemonicParsing="false" text="Home" />
+               <Button fx:id="watchlistButton" onAction="#watchlistBtnClicked" mnemonicParsing="false" text="Watchlist" />
             </children>
          </HBox>
       </children>
