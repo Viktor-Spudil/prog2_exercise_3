@@ -21,4 +21,5 @@ module at.ac.fhcampuswien.fhmdb {
     exports at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers;
 
     opens at.ac.fhcampuswien.fhmdb.DataTier.database to ormlite.jdbc;
+    exports at.ac.fhcampuswien.fhmdb.DataTier.database;
 }

@@ -19,13 +19,6 @@ public class FhmdbApplication extends Application {
         stage.setTitle("FHMDb!");
         stage.setScene(scene);
         stage.show();
-
-        try {
-            DatabaseManager.getInstance().initializeConnection("username", "password");
-            DatabaseManager.getInstance().test();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void main(String[] args) {

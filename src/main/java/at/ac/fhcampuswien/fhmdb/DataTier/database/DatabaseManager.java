@@ -16,8 +16,8 @@ public class DatabaseManager {
 
     // === 2. OBJECT VARIABLES ===
     //private boolean connectionInitialized = false;
-    public String DB_URL = "jdbc:h2:file: ./db/watchlistdb";
-    public Dao<WatchlistMovieEntity, Long> accountDao;
+    private String DB_URL = "jdbc:h2:file: ./db/watchlistdb";
+    Dao<WatchlistMovieEntity, Long> accountDao;
     private JdbcConnectionSource connectionSource;
 
 
@@ -34,6 +34,10 @@ public class DatabaseManager {
         return INSTANCE;
     }
 
+    public Dao<WatchlistMovieEntity, Long> getAccountDao() {
+        return this.accountDao;
+    }
+
 
     // === 6. MISCELLANEOUS OBJECT METHODS ===
     public void initializeConnection(String username, String password) throws SQLException {
@@ -48,11 +52,6 @@ public class DatabaseManager {
 
     private void createTables() throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, WatchlistMovieEntity.class);
-    }
-
-    public void test() throws SQLException {
-        WatchlistMovieEntity movie = new WatchlistMovieEntity("movieID", "title", "genre1, genre2", (int) 1999, "description", "imgURL", (int) 99, 9.0);
-        accountDao.create(movie);
     }
 
 
