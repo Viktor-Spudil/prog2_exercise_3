@@ -103,45 +103,10 @@ public class HomeController implements Initializable {
         }
     }
 
-    public List<Movie> filterByQuery(List<Movie> movies, String query) {
-        if(query == null || query.isEmpty()) return movies;
-
-        if(movies == null) {
-            throw new IllegalArgumentException("movies must not be null");
-        }
-
-        return movies.stream()
-                .filter(Objects::nonNull)
-                .filter(movie ->
-                        movie.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                                movie.getDescription().toLowerCase().contains(query.toLowerCase())
-                )
-                .toList();
-    }
-
-    public List<Movie> filterByGenre(List<Movie> movies, Genre genre) {
-        if(genre == null) return movies;
-
-        if(movies == null) {
-            throw new IllegalArgumentException("movies must not be null");
-        }
-
-        return movies.stream()
-                .filter(Objects::nonNull)
-                .filter(movie -> movie.getGenres().contains(genre))
-                .toList();
-    }
-
     public void applyAllFilters(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
         List<Movie> filteredMovies;
 
         filteredMovies = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
-
-        //STREAM-TEST
-        System.out.println("Most popular actor: " + getMostPopularActor(filteredMovies));
-        System.out.println("Longest movie title: " + getLongestMovieTitle(filteredMovies));
-        System.out.println("Amount of movies from: " + countMoviesFrom(filteredMovies, "Quentin Tarantino"));
-        System.out.println("Movies between years: " + getMoviesBetweenYears(filteredMovies, 2000, 2010));
 
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
@@ -159,39 +124,5 @@ public class HomeController implements Initializable {
 
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
-    }
-
-    public String getMostPopularActor(List<Movie> movies) {
-        return movies.stream()
-                .map(Movie::getMainCast)
-                .flatMap(List::stream)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(null);
-    }
-
-    public int getLongestMovieTitle(List<Movie> movies) {
-        return movies.stream()
-                .map(Movie::getTitle)
-                .mapToInt(String::length)
-                .max()
-                .orElse(0);
-    }
-
-    public long countMoviesFrom(List<Movie> movies, String director) {
-        return movies.stream()
-                .filter(Objects::nonNull)
-                .filter(movie -> movie.getDirectors().contains(director))
-                .count();
-    }
-
-    public List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear) {
-        return movies.stream()
-                .filter(Objects::nonNull)
-                .filter(movie -> (movie.getReleaseYear() >= startYear) && (movie.getReleaseYear() <= endYear))
-                .toList();
     }
 }
