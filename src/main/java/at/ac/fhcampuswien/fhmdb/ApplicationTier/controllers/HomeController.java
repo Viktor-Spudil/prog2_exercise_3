@@ -46,7 +46,7 @@ public class HomeController implements Initializable {
     public Button homeButton;
     @FXML
     public Button watchlistButton;
-    private List<Movie> homeviewlist;
+    private List<Movie> homelist;
     private List<Movie> watchlist = new ArrayList<>();
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected SortedState sortedState;
@@ -69,7 +69,7 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() throws IOException, SQLException {
-        homeviewlist = movieAPI.synchronousGETMoviesList(null, null, null, null);
+        homelist = movieAPI.synchronousGETMoviesList(null, null, null, null);
         sortedState = SortedState.NONE;
 
         // Initialize Database and create watchlist repository
@@ -107,21 +107,70 @@ public class HomeController implements Initializable {
         }
     }
 
-    public void applyAllFilters(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
-        if (viewState == ViewState.WATCHLIST) {
-            return;
+    public List<Movie> filterByQuery(List<Movie> movies, String query) {
+        if(query == null || query.isEmpty()) return movies;
+
+        if(movies == null) {
+            throw new IllegalArgumentException("movies must not be null");
         }
-        homeviewlist.clear();
 
-        homeviewlist = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
+        ArrayList<Movie> filteredMovies = new ArrayList<>();
 
-        observableMovies.clear();
-        observableMovies.addAll(homeviewlist);
+        filteredMovies.addAll(movies.stream()
+                .filter(Objects::nonNull)
+                .filter(movie ->
+                        movie.getTitle().toLowerCase().contains(query.toLowerCase()) ||
+                                movie.getDescription().toLowerCase().contains(query.toLowerCase())
+                )
+                .toList());
+
+        return filteredMovies;
+    }
+
+    public List<Movie> filterByGenre(List<Movie> movies, Genre genre) {
+        if(genre == null) return movies;
+
+        if(movies == null) {
+            throw new IllegalArgumentException("movies must not be null");
+        }
+
+        ArrayList<Movie> filteredMovies = new ArrayList<>();
+
+        filteredMovies.addAll(movies.stream()
+                .filter(Objects::nonNull)
+                .filter(movie -> movie.getGenres().contains(genre))
+                .toList());
+
+        return filteredMovies;
+    }
+
+    public void applyAllFilters(String searchQuery, Genre genre, String releasedYear, String ratingFrom) throws IOException {
+        switch (viewState) {
+            case HOMEVIEW:
+                homelist.clear();
+                homelist = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
+                observableMovies.clear();
+                observableMovies.addAll(homelist);
+                break;
+            case WATCHLIST:
+                watchlist.clear();
+
+                try {
+                    watchlist = watchlistMovieEntityListToMovielist(watchlistRepository.getAll());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                watchlist = filterByGenre(watchlist, genre);
+                watchlist = filterByQuery(watchlist, searchQuery);
+                observableMovies.clear();
+                observableMovies.addAll(watchlist);
+                break;
+        }
     }
 
     public void loadHomeView() {
         observableMovies.clear();
-        observableMovies.addAll(homeviewlist);
+        observableMovies.addAll(homelist);
         movieListView.setItems(observableMovies);
 
         movieListView.setCellFactory(movieListView -> {
@@ -182,7 +231,11 @@ public class HomeController implements Initializable {
 
     public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
         String searchQuery = searchField.getText().trim().toLowerCase();
-        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
+        Object tempGenre = genreComboBox.getSelectionModel().getSelectedItem();
+        if (tempGenre instanceof String) {
+            tempGenre = null;
+        }
+        Genre genre = (Genre) tempGenre;
         String releasedYear = releaseYearField.getText();
         String ratingFrom = ratingField.getText();
 
