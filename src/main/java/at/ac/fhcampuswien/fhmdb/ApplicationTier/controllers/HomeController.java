@@ -154,7 +154,6 @@ public class HomeController implements Initializable {
                 break;
             case WATCHLIST:
                 watchlist.clear();
-
                 try {
                     watchlist = watchlistMovieEntityListToMovielist(watchlistRepository.getAll());
                 } catch (SQLException e) {
