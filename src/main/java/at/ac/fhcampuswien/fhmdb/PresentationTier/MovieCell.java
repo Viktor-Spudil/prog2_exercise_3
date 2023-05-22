@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.PresentationTier;
 
 import at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers.ClickEventHandler;
+import at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers.HomeController;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -25,11 +26,11 @@ public class MovieCell extends ListCell<Movie> {
     private final HBox buttonContainer = new HBox(showDetails, watchlistButton);
 
 
-    public MovieCell(ClickEventHandler watchlistButtonClicked) {
+    public MovieCell(ClickEventHandler watchlistButtonClicked, HomeController controller) {
         super();
         watchlistButton.setOnMouseClicked(mouseEvent -> {
             try {
-                watchlistButtonClicked.onClick(getItem());
+                watchlistButtonClicked.onClick(getItem(), controller);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

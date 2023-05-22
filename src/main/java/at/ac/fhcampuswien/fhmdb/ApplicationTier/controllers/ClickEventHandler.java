@@ -4,5 +4,5 @@ import java.sql.SQLException;
 
 @FunctionalInterface
 public interface ClickEventHandler<Movie> {
-    void onClick(Movie movie) throws SQLException;
+    void onClick(Movie movie, HomeController controller) throws SQLException;
 }

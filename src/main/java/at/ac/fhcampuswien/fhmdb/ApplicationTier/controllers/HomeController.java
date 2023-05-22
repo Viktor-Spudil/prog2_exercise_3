@@ -120,7 +120,7 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);
 
         movieListView.setCellFactory(movieListView -> {
-            MovieCell cell = new MovieCell(onAddToWatchlistClicked);
+            MovieCell cell = new MovieCell(onAddToWatchlistClicked, this);
 
             cell.getWatchlistButton().setText("Watchlist");
 
@@ -142,7 +142,7 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);
 
         movieListView.setCellFactory(movieListView -> {
-            MovieCell cell = new MovieCell(onRemoveFromWatchlistClicked);
+            MovieCell cell = new MovieCell(onRemoveFromWatchlistClicked, this);
 
             cell.getWatchlistButton().setText("Remove");
 
@@ -160,14 +160,15 @@ public class HomeController implements Initializable {
         return movieList;
     }
 
-    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) ->
+    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem, controller) ->
     {
         HomeController.watchlistRepository.addToWatchlist((Movie) clickedItem);
     };
 
-    private final ClickEventHandler onRemoveFromWatchlistClicked = (clickedItem) ->
+    private final ClickEventHandler onRemoveFromWatchlistClicked = (clickedItem, controller) ->
     {
         HomeController.watchlistRepository.removeFromWatchlist((Movie) clickedItem);
+        controller.loadWatchlistView();
     };
 
     public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
