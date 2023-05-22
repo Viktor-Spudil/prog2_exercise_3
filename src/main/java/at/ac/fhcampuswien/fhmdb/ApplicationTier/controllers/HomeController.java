@@ -63,9 +63,9 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             initializeState();
-        } catch (IOException | DatabaseException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException | MovieApiException s) {
+        } catch (IOException | SQLException e) {
+            throw new MovieApiException(e.getMessage());
+        } catch (DatabaseException | MovieApiException s) {
             s.printStackTrace();
         }
         initializeLayout();
