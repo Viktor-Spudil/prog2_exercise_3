@@ -194,8 +194,8 @@ public class HomeController implements Initializable {
 
         try {
             watchlist = watchlistMovieEntityListToMovielist(watchlistRepository.getAll());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (DatabaseException d) {
+            d.printStackTrace();
         }
 
         observableMovies.clear();
@@ -225,12 +225,20 @@ public class HomeController implements Initializable {
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem, controller) ->
     {
-        HomeController.watchlistRepository.addToWatchlist((Movie) clickedItem);
+        try {
+            HomeController.watchlistRepository.addToWatchlist((Movie) clickedItem);
+        } catch (DatabaseException d) {
+            d.printStackTrace();
+        }
     };
 
     private final ClickEventHandler onRemoveFromWatchlistClicked = (clickedItem, controller) ->
     {
-        HomeController.watchlistRepository.removeFromWatchlist((Movie) clickedItem);
+        try {
+            HomeController.watchlistRepository.removeFromWatchlist((Movie) clickedItem);
+        } catch (DatabaseException d) {
+            d.printStackTrace();
+        }
         controller.loadWatchlistView();
     };
 
