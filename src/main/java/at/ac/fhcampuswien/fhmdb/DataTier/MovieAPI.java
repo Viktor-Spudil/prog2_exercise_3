@@ -50,8 +50,11 @@ public class MovieAPI {
         if (!(ratingFrom == null) && !ratingFrom.isBlank()) {
             urlBuilder.addQueryParameter("ratingFrom", ratingFrom);
         }
-
-        return urlBuilder.build().toString();
+        try {
+            return urlBuilder.build().toString();
+        } catch (MovieApiException e) {
+            throw new MovieApiException("Failed to build URL!", e);
+        }
     }
 
     public List<Movie> synchronousGETMoviesList(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws MovieApiException {
@@ -71,7 +74,7 @@ public class MovieAPI {
         try {
             response = call.execute();
         } catch (IOException e) {
-            throw new MovieApiException(e);
+            throw new MovieApiException(e.getMessage());
         }
 
         // Parse response
@@ -79,7 +82,7 @@ public class MovieAPI {
         try {
             jsonString = response.body().string();
         } catch (IOException e) {
-            throw new MovieApiException(e);
+            throw new MovieApiException(e.getMessage());
         }
         TypeToken<List<Movie>> collectionType = new TypeToken<>() {};
         moviesList = gson.fromJson(jsonString, collectionType); //reflections
