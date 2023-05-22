@@ -8,6 +8,7 @@ import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.PresentationTier.MovieCell;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
+import at.ac.fhcampuswien.fhmdb.models.ViewState;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -49,6 +50,7 @@ public class HomeController implements Initializable {
     private List<Movie> watchlist = new ArrayList<>();
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected SortedState sortedState;
+    private ViewState viewState;
     private MovieAPI movieAPI = new MovieAPI();
     public static WatchlistRepository watchlistRepository;
 
@@ -106,6 +108,9 @@ public class HomeController implements Initializable {
     }
 
     public void applyAllFilters(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
+        if (viewState == ViewState.WATCHLIST) {
+            return;
+        }
         homeviewlist.clear();
 
         homeviewlist = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
@@ -126,6 +131,8 @@ public class HomeController implements Initializable {
 
             return cell;
         });
+
+        viewState = ViewState.HOMEVIEW;
     }
 
     public void loadWatchlistView() {
@@ -148,6 +155,8 @@ public class HomeController implements Initializable {
 
             return cell;
         });
+
+        viewState = ViewState.WATCHLIST;
     }
 
     List<Movie> watchlistMovieEntityListToMovielist(List<WatchlistMovieEntity> watchlistMovieEntityList) {
