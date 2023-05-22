@@ -4,6 +4,8 @@ import at.ac.fhcampuswien.fhmdb.DataTier.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.DatabaseManager;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.Exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.PresentationTier.MovieCell;
@@ -61,14 +63,14 @@ public class HomeController implements Initializable {
         try {
             initializeState();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException s) {
-            s.printStackTrace();
+            e.printStackTrace();
+        } catch (DatabaseException d) {
+            d.printStackTrace();
         }
         initializeLayout();
     }
 
-    public void initializeState() throws IOException, SQLException {
+    public void initializeState() throws IOException, DatabaseException {
         homelist = movieAPI.synchronousGETMoviesList(null, null, null, null);
         sortedState = SortedState.NONE;
 
@@ -144,11 +146,15 @@ public class HomeController implements Initializable {
         return filteredMovies;
     }
 
-    public void applyAllFilters(String searchQuery, Genre genre, String releasedYear, String ratingFrom) throws IOException {
+    public void applyAllFilters(String searchQuery, Genre genre, String releasedYear, String ratingFrom) {
         switch (viewState) {
             case HOMEVIEW:
                 homelist.clear();
-                homelist = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
+                try {
+                    homelist = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
+                } catch (MovieApiException m) {
+                    m.printStackTrace();
+                }
                 observableMovies.clear();
                 observableMovies.addAll(homelist);
                 break;
@@ -228,7 +234,7 @@ public class HomeController implements Initializable {
         controller.loadWatchlistView();
     };
 
-    public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
+    public void searchBtnClicked(ActionEvent actionEvent) {
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object tempGenre = genreComboBox.getSelectionModel().getSelectedItem();
         if (tempGenre instanceof String) {

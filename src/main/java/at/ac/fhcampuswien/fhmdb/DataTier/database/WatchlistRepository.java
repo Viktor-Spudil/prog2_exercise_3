@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.DataTier.database;
 
+import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.j256.ormlite.dao.Dao;
@@ -46,27 +47,40 @@ public class WatchlistRepository {
 
     // === 5. SETTER AND GETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
-    public void addToWatchlist(Movie movie) throws SQLException {
+    public void addToWatchlist(Movie movie) throws DatabaseException {
         WatchlistMovieEntity watchListMovieEntry = movieToWatchlistMovieEntity(movie);
         //dao.createIfNotExists(watchListMovieEntry);
 
-        List<WatchlistMovieEntity> query = dao.queryBuilder().where().eq("title", movie.getTitle()).query();
-        if (query.isEmpty()) {
-            dao.create(watchListMovieEntry);
+        try {
+            List<WatchlistMovieEntity> query = dao.queryBuilder().where().eq("title", movie.getTitle()).query();
+            if (query.isEmpty()) {
+                dao.create(watchListMovieEntry);
+            }
+        } catch (SQLException s) {
+            throw new DatabaseException(s);
         }
     }
 
-    public void removeFromWatchlist(Movie movie) throws SQLException {
+    public void removeFromWatchlist(Movie movie) throws DatabaseException {
         //WatchlistMovieEntity watchlistMovieEntry = movieToWatchlistMovieEntity(movie);
         //dao.delete(watchlistMovieEntry);
 
-        DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = dao.deleteBuilder();
-        deleteBuilder.where().eq("title", movie.getTitle());
-        deleteBuilder.delete();
+        try {
+            DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = dao.deleteBuilder();
+            deleteBuilder.where().eq("title", movie.getTitle());
+            deleteBuilder.delete();
+        } catch (SQLException s) {
+            throw new DatabaseException(s);
+        }
+
     }
 
-    public List<WatchlistMovieEntity> getAll() throws SQLException {
-        return dao.queryForAll();
+    public List<WatchlistMovieEntity> getAll() throws DatabaseException {
+        try {
+            return dao.queryForAll();
+        } catch (SQLException s) {
+            throw new DatabaseException(s);
+        }
     }
 
 

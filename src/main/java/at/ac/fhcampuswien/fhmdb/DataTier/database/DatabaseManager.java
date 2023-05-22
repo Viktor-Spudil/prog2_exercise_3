@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.DataTier.database;
 
 
+import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -47,13 +48,18 @@ public class DatabaseManager {
 
 
     // === 6. MISCELLANEOUS OBJECT METHODS ===
-    public void initializeConnection(String username, String password) throws SQLException {
+    public void initializeConnection(String username, String password) throws DatabaseException {
         this.username = username;
         this.password = password;
 
-        createConnectionSource(username, password);
-        dao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
-        createTables();
+        try {
+            createConnectionSource(username, password);
+            dao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
+            createTables();
+        } catch (SQLException s) {
+            throw new DatabaseException(s);
+        }
+
     }
 
     private void createConnectionSource(String username, String password) throws SQLException {

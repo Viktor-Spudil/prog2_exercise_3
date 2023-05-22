@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.DataTier;
 
+import at.ac.fhcampuswien.fhmdb.Exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 
 import com.google.gson.Gson;
@@ -53,7 +54,7 @@ public class MovieAPI {
         return urlBuilder.build().toString();
     }
 
-    public List<Movie> synchronousGETMoviesList(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
+    public List<Movie> synchronousGETMoviesList(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws MovieApiException {
         List<Movie> moviesList;
         String url;
 
@@ -65,13 +66,17 @@ public class MovieAPI {
                 .url(url)
                 .build();
 
-        Call call = client.newCall(request);
-        Response response = call.execute();
+        try {
+            Call call = client.newCall(request);
+            Response response = call.execute();
 
-        // Parse response
-        String jsonString = response.body().string();
-        TypeToken<List<Movie>> collectionType = new TypeToken<>() {};
-        moviesList = gson.fromJson(jsonString, collectionType); //reflections
+            // Parse response
+            String jsonString = response.body().string();
+            TypeToken<List<Movie>> collectionType = new TypeToken<>() {};
+            moviesList = gson.fromJson(jsonString, collectionType); //reflections
+        } catch (IOException i) {
+            throw new MovieApiException(i);
+        }
 
         return moviesList;
     }
