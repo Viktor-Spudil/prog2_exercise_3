@@ -62,15 +62,15 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             initializeState();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (MovieApiException m) {
+            m.printStackTrace();
         } catch (DatabaseException d) {
             d.printStackTrace();
         }
         initializeLayout();
     }
 
-    public void initializeState() throws IOException, DatabaseException {
+    public void initializeState() throws MovieApiException, DatabaseException {
         homelist = movieAPI.synchronousGETMoviesList(null, null, null, null);
         sortedState = SortedState.NONE;
 
