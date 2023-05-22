@@ -61,6 +61,39 @@ public class WatchlistMovieEntity {
 
     // === 4. STATIC METHODS ===
     // === 5. GETTER AND SETTER ===
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getGenres() {
+        return genres;
+    }
+
+    public Integer getReleaseYear() {
+        return releaseYear;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public Integer getLengthInMinutes() {
+        return lengthInMinutes;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+
     // === 6. MISCELLANEOUS OBJECT METHODS ===
     public static String genresToString(List<Genre> genres) {
         return genres

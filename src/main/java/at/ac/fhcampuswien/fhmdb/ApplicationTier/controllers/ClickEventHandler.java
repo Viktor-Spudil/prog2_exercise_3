@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers;
 
+import java.sql.SQLException;
+
 @FunctionalInterface
 public interface ClickEventHandler<Movie> {
-    void onClick(Movie movie);
+    void onClick(Movie movie) throws SQLException;
 }

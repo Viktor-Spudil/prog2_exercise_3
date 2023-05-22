@@ -2,6 +2,7 @@ package at.ac.fhcampuswien.fhmdb.ApplicationTier.controllers;
 
 import at.ac.fhcampuswien.fhmdb.DataTier.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.DatabaseManager;
+import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -22,8 +23,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 public class HomeController implements Initializable {
@@ -46,11 +45,14 @@ public class HomeController implements Initializable {
     public Button homeButton;
     @FXML
     public Button watchlistButton;
-    public List<Movie> allMovies;
+    private List<Movie> homeviewlist;
+    private List<Movie> watchlist = new ArrayList<>();
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
-    protected ObservableList<Movie> watchlist = FXCollections.observableArrayList();
     protected SortedState sortedState;
     private MovieAPI movieAPI = new MovieAPI();
+    public static WatchlistRepository watchlistRepository;
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -58,15 +60,19 @@ public class HomeController implements Initializable {
             initializeState();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (SQLException s) {
+            s.printStackTrace();
         }
         initializeLayout();
     }
 
-    public void initializeState() throws IOException {
-        allMovies = movieAPI.synchronousGETMoviesList(null, null, null, null);
-        observableMovies.clear();
-        observableMovies.addAll(allMovies); // add all movies to the observable list
+    public void initializeState() throws IOException, SQLException {
+        homeviewlist = movieAPI.synchronousGETMoviesList(null, null, null, null);
         sortedState = SortedState.NONE;
+
+        // Initialize Database and create watchlist repository
+        DatabaseManager.getInstance().initializeConnection("username", "password");
+        watchlistRepository = new WatchlistRepository();
     }
 
     public void initializeLayout() {
@@ -100,13 +106,69 @@ public class HomeController implements Initializable {
     }
 
     public void applyAllFilters(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
-        List<Movie> filteredMovies;
+        homeviewlist.clear();
 
-        filteredMovies = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
+        homeviewlist = movieAPI.synchronousGETMoviesList(searchQuery, genre, releasedYear, ratingFrom);
 
         observableMovies.clear();
-        observableMovies.addAll(filteredMovies);
+        observableMovies.addAll(homeviewlist);
     }
+
+    public void loadHomeView() {
+        observableMovies.clear();
+        observableMovies.addAll(homeviewlist);
+        movieListView.setItems(observableMovies);
+
+        movieListView.setCellFactory(movieListView -> {
+            MovieCell cell = new MovieCell(onAddToWatchlistClicked);
+
+            cell.getWatchlistButton().setText("Watchlist");
+
+            return cell;
+        });
+    }
+
+    public void loadWatchlistView() {
+        watchlist.clear();
+
+        try {
+            watchlist = watchlistMovieEntityListToMovielist(watchlistRepository.getAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        observableMovies.clear();
+        observableMovies.addAll(watchlist);
+        movieListView.setItems(observableMovies);
+
+        movieListView.setCellFactory(movieListView -> {
+            MovieCell cell = new MovieCell(onRemoveFromWatchlistClicked);
+
+            cell.getWatchlistButton().setText("Remove");
+
+            return cell;
+        });
+    }
+
+    List<Movie> watchlistMovieEntityListToMovielist(List<WatchlistMovieEntity> watchlistMovieEntityList) {
+        ArrayList<Movie> movieList = new ArrayList<>();
+
+        for (WatchlistMovieEntity wme : watchlistMovieEntityList) {
+            movieList.add(WatchlistRepository.WatchlistMovieEntityToMovie(wme));
+        }
+
+        return movieList;
+    }
+
+    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) ->
+    {
+        HomeController.watchlistRepository.addToWatchlist((Movie) clickedItem);
+    };
+
+    private final ClickEventHandler onRemoveFromWatchlistClicked = (clickedItem) ->
+    {
+        HomeController.watchlistRepository.removeFromWatchlist((Movie) clickedItem);
+    };
 
     public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
         String searchQuery = searchField.getText().trim().toLowerCase();
@@ -122,44 +184,26 @@ public class HomeController implements Initializable {
         sortMovies();
     }
 
-    // Functionalities for movie management
-    public void loadHomeView() {
-        movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(movieListView -> {
-            MovieCell cell = new MovieCell();
-
-            // Access the watchlist button from the cell
-            Button watchlistButton = cell.getWatchlistButton();
-            watchlistButton.setText("Watchlist");
-
-            // Assign a new functionality to the watchlist button
-            watchlistButton.setOnAction(event -> {
-                Movie selectedMovie = cell.getItem();
-                addToWatchlist(selectedMovie);
-            });
-            return cell;
-        });
+    public void homeViewBtnClicked(ActionEvent actionEvent) {
+        loadHomeView();
     }
-    public void homeViewBtnClicked(ActionEvent actionEvent) {loadHomeView();}
 
-    public void loadWatchlistView() {
-        movieListView.setItems(watchlist);
-        movieListView.setCellFactory(movieListView -> {
-            MovieCell cell = new MovieCell();
-
-            // Access the watchlist button from the cell
-            Button watchlistButton = cell.getWatchlistButton();
-            watchlistButton.setText("Remove");
-
-            // Assign a new functionality to the watchlist button
-            watchlistButton.setOnAction(event -> {
-                Movie selectedMovie = cell.getItem();
-                removeFromWatchlist(selectedMovie);
-            });
-            return cell;
-        });
+    public void watchlistBtnClicked(ActionEvent actionEvent) {
+        loadWatchlistView();
     }
-    public void watchlistBtnClicked(ActionEvent actionEvent) {loadWatchlistView();}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void addToWatchlist(Movie selectedMovie) {
         if (!watchlist.contains(selectedMovie)) {

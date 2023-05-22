@@ -31,11 +31,12 @@ public class DatabaseManager {
 
 
     // === 4. STATIC METHODS ===
-    // === 5. SETTER AND GETTER ===
     public static DatabaseManager getInstance() {
         return INSTANCE;
     }
 
+
+    // === 5. SETTER AND GETTER ===
     public JdbcConnectionSource getConnectionSource() {
         return this.connectionSource;
     }
