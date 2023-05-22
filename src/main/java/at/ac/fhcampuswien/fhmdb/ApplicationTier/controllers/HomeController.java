@@ -191,30 +191,4 @@ public class HomeController implements Initializable {
     public void watchlistBtnClicked(ActionEvent actionEvent) {
         loadWatchlistView();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private void addToWatchlist(Movie selectedMovie) {
-        if (!watchlist.contains(selectedMovie)) {
-            watchlist.add(selectedMovie);
-            // Add code to store movie in the database or perform other operations
-        }
-    }
-
-    public void removeFromWatchlist(Movie selectedMovie) {
-        if (watchlist.contains(selectedMovie)) {
-            watchlist.remove(selectedMovie);
-        }
-    }
 }
