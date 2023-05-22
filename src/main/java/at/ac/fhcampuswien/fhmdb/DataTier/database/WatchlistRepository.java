@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.DataTier.database;
 
+import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.j256.ormlite.dao.Dao;
@@ -19,7 +20,7 @@ public class WatchlistRepository {
     // --- 3.1 STATIC BLOCKS ---
     // --- 3.2 INSTANCE INITIALIZER ---
     // --- 3.3 REAL CONSTRUCTORS ---
-    public WatchlistRepository() {
+    public WatchlistRepository() throws DatabaseException {
         this.dao = DatabaseManager.getInstance().getWatchlistDao();
     }
 
@@ -46,27 +47,49 @@ public class WatchlistRepository {
 
     // === 5. SETTER AND GETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
-    public void addToWatchlist(Movie movie) throws SQLException {
+    public void addToWatchlist(Movie movie) throws DatabaseException {
         WatchlistMovieEntity watchListMovieEntry = movieToWatchlistMovieEntity(movie);
         //dao.createIfNotExists(watchListMovieEntry);
 
-        List<WatchlistMovieEntity> query = dao.queryBuilder().where().eq("title", movie.getTitle()).query();
-        if (query.isEmpty()) {
-            dao.create(watchListMovieEntry);
+        List<WatchlistMovieEntity> query = null;
+        try {
+            query = dao.queryBuilder().where().eq("title", movie.getTitle()).query();
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to query on addToWatchlist", e);
         }
+        try {
+            if (query.isEmpty()) {
+                dao.create(watchListMovieEntry);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Add to Database failed", e);
+        }
+
     }
 
-    public void removeFromWatchlist(Movie movie) throws SQLException {
+    public void removeFromWatchlist(Movie movie) throws DatabaseException {
         //WatchlistMovieEntity watchlistMovieEntry = movieToWatchlistMovieEntity(movie);
         //dao.delete(watchlistMovieEntry);
 
         DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = dao.deleteBuilder();
-        deleteBuilder.where().eq("title", movie.getTitle());
-        deleteBuilder.delete();
+        try {
+            deleteBuilder.where().eq("title", movie.getTitle());
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to query on removeFromWatchlist", e);
+        }
+        try {
+            deleteBuilder.delete();
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to delete from Database",e);
+        }
     }
 
-    public List<WatchlistMovieEntity> getAll() throws SQLException {
-        return dao.queryForAll();
+    public List<WatchlistMovieEntity> getAll() {
+        try {
+            return dao.queryForAll();
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to query watchlist members", e);
+        }
     }
 
 

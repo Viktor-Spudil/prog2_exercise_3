@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.DataTier;
 
-import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.Exceptions.MovieApiException;
+import      at.ac.fhcampuswien.fhmdb.models.Movie;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -32,7 +33,7 @@ public class MovieAPI {
     // === 4. STATIC METHODS ===
     // === 5. GETTER AND SETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
-    private String buildURL(String searchQuery, Object genre, String releasedYear, String ratingFrom) {
+    private String buildURL(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws MovieApiException {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
 
 
@@ -53,7 +54,7 @@ public class MovieAPI {
         return urlBuilder.build().toString();
     }
 
-    public List<Movie> synchronousGETMoviesList(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
+    public List<Movie> synchronousGETMoviesList(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws MovieApiException {
         List<Movie> moviesList;
         String url;
 
@@ -66,10 +67,20 @@ public class MovieAPI {
                 .build();
 
         Call call = client.newCall(request);
-        Response response = call.execute();
+        Response response = null;
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            throw new MovieApiException(e);
+        }
 
         // Parse response
-        String jsonString = response.body().string();
+        String jsonString = null;
+        try {
+            jsonString = response.body().string();
+        } catch (IOException e) {
+            throw new MovieApiException(e);
+        }
         TypeToken<List<Movie>> collectionType = new TypeToken<>() {};
         moviesList = gson.fromJson(jsonString, collectionType); //reflections
 

@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.DataTier.database;
 
 
+import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -31,7 +32,7 @@ public class DatabaseManager {
 
 
     // === 4. STATIC METHODS ===
-    public static DatabaseManager getInstance() {
+    public static DatabaseManager getInstance() throws DatabaseException {
         return INSTANCE;
     }
 

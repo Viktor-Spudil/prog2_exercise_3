@@ -4,11 +4,14 @@ import at.ac.fhcampuswien.fhmdb.DataTier.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.DatabaseManager;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.Exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.PresentationTier.MovieCell;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
 import at.ac.fhcampuswien.fhmdb.models.ViewState;
+import com.jfoenix.animation.alert.JFXAlertAnimation;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -60,9 +63,9 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             initializeState();
-        } catch (IOException e) {
+        } catch (IOException | DatabaseException e) {
             throw new RuntimeException(e);
-        } catch (SQLException s) {
+        } catch (SQLException | MovieApiException s) {
             s.printStackTrace();
         }
         initializeLayout();
@@ -107,7 +110,7 @@ public class HomeController implements Initializable {
         }
     }
 
-    public void applyAllFilters(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws IOException {
+    public void applyAllFilters(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws MovieApiException {
         if (viewState == ViewState.WATCHLIST) {
             return;
         }
@@ -138,10 +141,8 @@ public class HomeController implements Initializable {
     public void loadWatchlistView() {
         watchlist.clear();
 
-        try {
-            watchlist = watchlistMovieEntityListToMovielist(watchlistRepository.getAll());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+       {
+           watchlist = watchlistMovieEntityListToMovielist(watchlistRepository.getAll());
         }
 
         observableMovies.clear();
@@ -170,24 +171,33 @@ public class HomeController implements Initializable {
     }
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem, controller) ->
-    {
+    { try {
         HomeController.watchlistRepository.addToWatchlist((Movie) clickedItem);
+    } catch (DatabaseException dbe) {
+        throw new DatabaseException(dbe.getMessage());
+    }
     };
 
     private final ClickEventHandler onRemoveFromWatchlistClicked = (clickedItem, controller) ->
-    {
+    { try {
         HomeController.watchlistRepository.removeFromWatchlist((Movie) clickedItem);
         controller.loadWatchlistView();
+    } catch (DatabaseException dbe) {
+        throw new DatabaseException(dbe.getMessage());
+    }
     };
 
-    public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
+    public void searchBtnClicked(ActionEvent actionEvent) {
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
         String releasedYear = releaseYearField.getText();
         String ratingFrom = ratingField.getText();
-
-        applyAllFilters(searchQuery, genre, releasedYear, ratingFrom);
-        sortMovies(sortedState);
+        try {
+            applyAllFilters(searchQuery, genre, releasedYear, ratingFrom);
+            sortMovies(sortedState);
+        } catch (MovieApiException e) {
+            throw new MovieApiException("Couldn't resolve request!",e);
+        }
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
