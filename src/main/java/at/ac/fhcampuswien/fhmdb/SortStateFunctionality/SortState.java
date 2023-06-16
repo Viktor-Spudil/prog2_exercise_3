@@ -7,8 +7,6 @@ import java.util.List;
 public interface SortState {
 
 
-    void setSortContext (SortContext context);
-
     List<Movie> sortMovies(List<Movie> moviesList);
 
 

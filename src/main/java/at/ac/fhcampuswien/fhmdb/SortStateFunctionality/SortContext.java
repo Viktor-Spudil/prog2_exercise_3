@@ -25,7 +25,6 @@ public class SortContext {
 
     public void transitionTo (SortState state) {
         sortState = state;
-        sortState.setSortContext(this);
     }
 
     public List<Movie> sortMoviesAscending(List<Movie> moviesList) {
