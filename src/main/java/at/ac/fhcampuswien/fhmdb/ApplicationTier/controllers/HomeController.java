@@ -6,10 +6,10 @@ import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.Exceptions.MovieApiException;
+import at.ac.fhcampuswien.fhmdb.SortStateFunctionality.*;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.PresentationTier.MovieCell;
-import at.ac.fhcampuswien.fhmdb.models.SortedState;
 import at.ac.fhcampuswien.fhmdb.models.ViewState;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -22,7 +22,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
@@ -43,7 +42,9 @@ public class HomeController implements Initializable {
     @FXML
     public TextField ratingField;
     @FXML
-    public JFXButton sortBtn;
+    public JFXButton AscendingBtn;
+    @FXML
+    public JFXButton DescendingBtn;
     @FXML
     public Button homeButton;
     @FXML
@@ -51,10 +52,11 @@ public class HomeController implements Initializable {
     private List<Movie> homelist;
     private List<Movie> watchlist = new ArrayList<>();
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
-    protected SortedState sortedState;
     private ViewState viewState;
     private MovieAPI movieAPI = new MovieAPI();
     public static WatchlistRepository watchlistRepository;
+
+    private SortContext sortContext = new SortContext();
 
 
 
@@ -72,7 +74,8 @@ public class HomeController implements Initializable {
 
     public void initializeState() throws MovieApiException, DatabaseException {
         homelist = movieAPI.synchronousGETMoviesList(null, null, null, null);
-        sortedState = SortedState.NONE;
+        sortContext.setMovies(homelist);
+
 
         // Initialize Database and create watchlist repository
         DatabaseManager.getInstance().initializeConnection("username", "password");
@@ -88,7 +91,7 @@ public class HomeController implements Initializable {
         genreComboBox.setPromptText("Filter by Genre");
     }
 
-    public void sortMovies() {
+    /*public void sortMovies() {
         if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
             sortMovies(SortedState.ASCENDING);
         } else if (sortedState == SortedState.ASCENDING) {
@@ -107,7 +110,7 @@ public class HomeController implements Initializable {
             observableMovies.sort(Comparator.comparing(Movie::getTitle).reversed());
             sortedState = SortedState.DESCENDING;
         }
-    }
+    }*/
 
     public List<Movie> filterByQuery(List<Movie> movies, String query) {
         if(query == null || query.isEmpty()) return movies;
@@ -248,16 +251,36 @@ public class HomeController implements Initializable {
         if (tempGenre instanceof String) {
             tempGenre = null;
         }
+
         Genre genre = (Genre) tempGenre;
         String releasedYear = releaseYearField.getText();
         String ratingFrom = ratingField.getText();
 
         applyAllFilters(searchQuery, genre, releasedYear, ratingFrom);
-        sortMovies(sortedState);
+
+        if (viewState == ViewState.HOMEVIEW) {
+            observableMovies.setAll(sortContext.sortMovies(homelist));
+        } else {
+            observableMovies.setAll(sortContext.sortMovies(watchlist));
+        }
+
     }
 
-    public void sortBtnClicked(ActionEvent actionEvent) {
-        sortMovies();
+
+    public void AscBtnClicked(ActionEvent actionEvent) {
+        if (viewState == ViewState.HOMEVIEW) {
+            observableMovies.setAll(sortContext.sortMoviesAscending(homelist));
+        } else {
+            observableMovies.setAll(sortContext.sortMoviesAscending(watchlist));
+        }
+    }
+
+    public void DscBtnClicked(ActionEvent actionEvent) {
+        if (viewState == ViewState.HOMEVIEW) {
+            observableMovies.setAll(sortContext.sortMoviesDescending(homelist));
+        } else {
+            observableMovies.setAll(sortContext.sortMoviesDescending(watchlist));
+        }
     }
 
     public void homeViewBtnClicked(ActionEvent actionEvent) {
@@ -267,4 +290,5 @@ public class HomeController implements Initializable {
     public void watchlistBtnClicked(ActionEvent actionEvent) {
         loadWatchlistView();
     }
+
 }

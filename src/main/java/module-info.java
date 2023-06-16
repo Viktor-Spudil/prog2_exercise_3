@@ -22,4 +22,5 @@ module at.ac.fhcampuswien.fhmdb {
 
     opens at.ac.fhcampuswien.fhmdb.DataTier.database to ormlite.jdbc;
     exports at.ac.fhcampuswien.fhmdb.DataTier.database;
+    exports at.ac.fhcampuswien.fhmdb.SortStateFunctionality;
 }
