@@ -14,14 +14,22 @@ public class WatchlistRepository {
     // === 1. CLASS VARIABLES ===
     // === 2. OBJECT VARIABLES ===
     private Dao<WatchlistMovieEntity, Long> dao;
+    private static WatchlistRepository instance;
 
 
     // === 3. CONSTRUCTORS ===
     // --- 3.1 STATIC BLOCKS ---
     // --- 3.2 INSTANCE INITIALIZER ---
     // --- 3.3 REAL CONSTRUCTORS ---
-    public WatchlistRepository() {
+    private WatchlistRepository() {
         this.dao = DatabaseManager.getInstance().getWatchlistDao();
+    }
+
+    public static WatchlistRepository getInstance () {
+        if (instance == null) {
+            instance = new WatchlistRepository();
+        }
+        return instance;
     }
 
 

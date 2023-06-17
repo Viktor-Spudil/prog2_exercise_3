@@ -55,7 +55,6 @@ public class HomeController implements Initializable {
     private ViewState viewState;
     private MovieAPI movieAPI = new MovieAPI();
     public static WatchlistRepository watchlistRepository;
-
     private SortContext sortContext = new SortContext();
 
 
@@ -79,7 +78,8 @@ public class HomeController implements Initializable {
 
         // Initialize Database and create watchlist repository
         DatabaseManager.getInstance().initializeConnection("username", "password");
-        watchlistRepository = new WatchlistRepository();
+        watchlistRepository = WatchlistRepository.getInstance();
+
     }
 
     public void initializeLayout() {
@@ -90,27 +90,6 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
     }
-
-    /*public void sortMovies() {
-        if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
-            sortMovies(SortedState.ASCENDING);
-        } else if (sortedState == SortedState.ASCENDING) {
-            sortMovies(SortedState.DESCENDING);
-        }
-    }
-
-    // sort movies based on sortedState
-    // by default sorted state is NONE
-    // afterwards it switches between ascending and descending
-    public void sortMovies(SortedState sortDirection) {
-        if (sortDirection == SortedState.ASCENDING) {
-            observableMovies.sort(Comparator.comparing(Movie::getTitle));
-            sortedState = SortedState.ASCENDING;
-        } else {
-            observableMovies.sort(Comparator.comparing(Movie::getTitle).reversed());
-            sortedState = SortedState.DESCENDING;
-        }
-    }*/
 
     public List<Movie> filterByQuery(List<Movie> movies, String query) {
         if(query == null || query.isEmpty()) return movies;
