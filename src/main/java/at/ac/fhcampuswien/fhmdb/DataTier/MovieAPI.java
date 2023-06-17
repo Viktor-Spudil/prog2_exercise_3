@@ -28,37 +28,16 @@ public class MovieAPI {
     public MovieAPI() {
         client = new OkHttpClient();
     }
-
-
     // === 4. STATIC METHODS ===
     // === 5. GETTER AND SETTER ===
     // === 6. MISCELLANEOUS OBJECT METHODS ===
-    private String buildURL(String searchQuery, Object genre, String releasedYear, String ratingFrom) {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
-
-
-        // Build request URL
-        if (!(searchQuery == null) && !searchQuery.isBlank()) {
-            urlBuilder.addQueryParameter("query", searchQuery);
-        }
-        if (!(genre == null) && !genre.toString().equals("No filter")) {
-            urlBuilder.addQueryParameter("genre", genre.toString());
-        }
-        if (!(releasedYear == null) && !releasedYear.isBlank()) {
-            urlBuilder.addQueryParameter("releaseYear", releasedYear);
-        }
-        if (!(ratingFrom == null) && !ratingFrom.isBlank()) {
-            urlBuilder.addQueryParameter("ratingFrom", ratingFrom);
-        }
-
-        return urlBuilder.build().toString();
-    }
 
     public List<Movie> synchronousGETMoviesList(String searchQuery, Object genre, String releasedYear, String ratingFrom) throws MovieApiException {
         List<Movie> moviesList;
         String url;
+        MovieApiUrlBuilder builder = new MovieApiUrlBuilder(BASE_URL);
 
-        url = buildURL(searchQuery, genre, releasedYear, ratingFrom);
+        url = builder.query(searchQuery).genre(genre).releaseYear(releasedYear).ratingFrom(ratingFrom).build();
         System.out.println(url);
 
         // Make request and receive response
