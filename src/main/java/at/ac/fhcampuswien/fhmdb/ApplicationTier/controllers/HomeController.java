@@ -61,7 +61,6 @@ public class HomeController implements Initializable, Observer {
     private SortContext sortContext = new SortContext();
 
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -96,9 +95,9 @@ public class HomeController implements Initializable, Observer {
     }
 
     public List<Movie> filterByQuery(List<Movie> movies, String query) {
-        if(query == null || query.isEmpty()) return movies;
+        if (query == null || query.isEmpty()) return movies;
 
-        if(movies == null) {
+        if (movies == null) {
             throw new IllegalArgumentException("movies must not be null");
         }
 
@@ -116,9 +115,9 @@ public class HomeController implements Initializable, Observer {
     }
 
     public List<Movie> filterByGenre(List<Movie> movies, Genre genre) {
-        if(genre == null) return movies;
+        if (genre == null) return movies;
 
-        if(movies == null) {
+        if (movies == null) {
             throw new IllegalArgumentException("movies must not be null");
         }
 
@@ -173,6 +172,7 @@ public class HomeController implements Initializable, Observer {
         });
 
         viewState = ViewState.HOMEVIEW;
+        observableMovies.setAll(sortContext.sortMoviesAscending(homelist));
     }
 
     public void loadWatchlistView() {
@@ -195,8 +195,9 @@ public class HomeController implements Initializable, Observer {
 
             return cell;
         });
-
         viewState = ViewState.WATCHLIST;
+        observableMovies.setAll(sortContext.sortMovies(watchlist));
+
     }
 
     List<Movie> watchlistMovieEntityListToMovielist(List<WatchlistMovieEntity> watchlistMovieEntityList) {

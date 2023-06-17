@@ -29,7 +29,7 @@ public class WatchlistRepository implements Observable {
         this.dao = DatabaseManager.getInstance().getWatchlistDao();
     }
 
-    public static WatchlistRepository getInstance () {
+    public static WatchlistRepository getInstance() {
         if (instance == null) {
             instance = new WatchlistRepository();
         }
@@ -100,7 +100,7 @@ public class WatchlistRepository implements Observable {
 
     @Override
     public void notifyObservers(String message) {
-        for (Observer observer:observerList) {
+        for (Observer observer : observerList) {
             observer.showWatchlistWindow(message);
         }
     }
