@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.fhmdb.DataTier.database;
 
 import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.Observer.Observable;
+import at.ac.fhcampuswien.fhmdb.Observer.Observer;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.j256.ormlite.dao.Dao;
@@ -9,12 +11,14 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Flow;
 
-public class WatchlistRepository {
+public class WatchlistRepository implements Observable {
     // === 1. CLASS VARIABLES ===
     // === 2. OBJECT VARIABLES ===
     private Dao<WatchlistMovieEntity, Long> dao;
     private static WatchlistRepository instance;
+    private ArrayList<Observer> observerList = new ArrayList<>();
 
 
     // === 3. CONSTRUCTORS ===
@@ -63,6 +67,9 @@ public class WatchlistRepository {
             List<WatchlistMovieEntity> query = dao.queryBuilder().where().eq("title", movie.getTitle()).query();
             if (query.isEmpty()) {
                 dao.create(watchListMovieEntry);
+                notifyObservers("Movie successfully added to watchlist");
+            } else {
+                notifyObservers("Movie already on watchlist");
             }
         } catch (SQLException s) {
             throw new DatabaseException(s);
@@ -89,6 +96,23 @@ public class WatchlistRepository {
         } catch (SQLException s) {
             throw new DatabaseException(s);
         }
+    }
+
+    @Override
+    public void notifyObservers(String message) {
+        for (Observer observer:observerList) {
+            observer.showWatchlistWindow(message);
+        }
+    }
+
+    @Override
+    public void subscribe(Observer observer) {
+        this.observerList.add(observer);
+    }
+
+    @Override
+    public void unsubscribe(Observer observer) {
+        this.observerList.remove(observer);
     }
 
 

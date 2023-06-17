@@ -6,6 +6,7 @@ import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.DataTier.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.Exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.Exceptions.MovieApiException;
+import at.ac.fhcampuswien.fhmdb.Observer.Observer;
 import at.ac.fhcampuswien.fhmdb.SortStateFunctionality.*;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -19,7 +20,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
@@ -27,7 +30,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 
-public class HomeController implements Initializable {
+public class HomeController implements Initializable, Observer {
 
     @FXML
     public JFXButton searchBtn;
@@ -79,6 +82,7 @@ public class HomeController implements Initializable {
         // Initialize Database and create watchlist repository
         DatabaseManager.getInstance().initializeConnection("username", "password");
         watchlistRepository = WatchlistRepository.getInstance();
+        watchlistRepository.subscribe(this);
 
     }
 
@@ -270,4 +274,15 @@ public class HomeController implements Initializable {
         loadWatchlistView();
     }
 
+    @Override
+    public void showWatchlistWindow(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Watchlist");
+        alert.setContentText(message);
+        alert.showAndWait().ifPresent(rs -> {
+            if (rs == ButtonType.OK) {
+                System.out.println("Pressed OK.");
+            }
+        });
+    }
 }
